@@ -14,7 +14,7 @@ describe TableReservation do
         expect(table_reservation).to_not be_valid
       end
 
-      it "checks if end date is after start date" do
+      it "adds validation error message" do
         table_reservation.valid?
         expect(table_reservation.errors.full_messages).to be_eql ["Started at can't be greater than Ended at"]
       end
