@@ -12,8 +12,8 @@ class TableReservation < ActiveRecord::Base
   scope :overlapped, -> (table_reservation) { where("(:started_at >= started_at AND :started_at < ended_at) OR
                                                      (:ended_at > started_at AND :ended_at < ended_at) OR
                                                      (:started_at <= started_at AND :ended_at >= ended_at)",
-                                                     {ended_at: table_reservation.ended_at.to_s(:db),
-                                                      started_at: table_reservation.started_at.to_s(:db)}) }
+                                                     {ended_at: table_reservation.ended_at,
+                                                      started_at: table_reservation.started_at}) }
 
   private
 
