@@ -5,12 +5,19 @@ class TableReservation < ActiveRecord::Base
   validates :ended_at, presence: true
 
   validate :ended_at_greater_than_started_at
+  validate :reservation_is_in_future
 
   private
 
   def ended_at_greater_than_started_at
     if self.started_at && (self.started_at > self.ended_at)
       self.errors.add(:started_at, "can't be greater than Ended at")
+    end
+  end
+
+  def reservation_is_in_future
+    if self.started_at && (self.started_at < DateTime.current)
+      self.errors.add(:started_at, "can't be in the past")
     end
   end
 
