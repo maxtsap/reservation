@@ -2,6 +2,19 @@ require 'spec_helper'
 
 describe TableReservation do
 
+  shared_context "not valid" do
+
+    it "is not valid" do
+      expect(table_reservation).to_not be_valid
+    end
+
+    it "adds validation error message" do
+      table_reservation.valid?
+      expect(table_reservation.errors.full_messages).to be_eql error_message
+    end
+
+  end
+
   describe "#validations" do
     it { should validate_presence_of(:table_number) }
     it { should validate_presence_of(:started_at) }
@@ -9,41 +22,16 @@ describe TableReservation do
 
     describe "#ended_at_greater_than_started_at" do
       let(:table_reservation) { build :table_reservation, table_number: 1, started_at: DateTime.current + 1.hour, ended_at: DateTime.current - 1.day }
+      let(:error_message) { ["Started at can't be greater than Ended at"] }
 
-      it "checks if end date is after start date" do
-        expect(table_reservation).to_not be_valid
-      end
-
-      it "adds validation error message" do
-        table_reservation.valid?
-        expect(table_reservation.errors.full_messages).to be_eql ["Started at can't be greater than Ended at"]
-      end
+      it_behaves_like "not valid"
     end
 
     describe "#reservation_is_in_future" do
       let(:table_reservation) { build :table_reservation, table_number: 1, started_at: DateTime.current - 1.hour, ended_at: DateTime.current + 4.hours }
+      let(:error_message) { ["Started at can't be in the past"] }
 
-      it "checks if start date is in future" do
-        expect(table_reservation).to_not be_valid
-      end
-
-      it "adds validation error message" do
-        table_reservation.valid?
-        expect(table_reservation.errors.full_messages).to be_eql ["Started at can't be in the past"]
-      end
-    end
-
-    shared_context "not valid" do
-
-      it "is not valid" do
-        expect(table_reservation).to_not be_valid
-      end
-
-      it "adds validation error message" do
-        table_reservation.valid?
-        expect(table_reservation.errors.full_messages).to be_eql error_message
-      end
-
+      it_behaves_like "not valid"
     end
 
     describe "#reservation_overlapping" do
