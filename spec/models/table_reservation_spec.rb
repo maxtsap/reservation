@@ -93,4 +93,19 @@ describe TableReservation do
     end
   end
 
+  describe ".scopes" do
+    let!(:table_reservation) { create :table_reservation, table_number: 1, started_at: DateTime.current + 10.hours, ended_at: DateTime.current + 14.hours }
+    let!(:table_reservation1) { create :table_reservation, table_number: 1, started_at: DateTime.current + 1.hours, ended_at: DateTime.current + 4.hours }
+    let!(:table_reservation2) { create :table_reservation, table_number: 2, started_at: DateTime.current + 1.hours, ended_at: DateTime.current + 4.hours }
+    let!(:table_reservation3) { build :table_reservation, table_number: 1, started_at: DateTime.current + 1.hours, ended_at: DateTime.current + 4.hours }
+
+    it "returns records with same table number" do
+      expect(TableReservation.same_table(table_reservation1).to_a).to be_eql [table_reservation, table_reservation1]
+    end
+
+    it "returns overlapped records" do
+      expect(TableReservation.overlapped(table_reservation3).to_a).to be_eql [table_reservation1, table_reservation2]
+    end
+  end
+
 end
