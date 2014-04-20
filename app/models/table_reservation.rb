@@ -27,7 +27,7 @@ class TableReservation < ActiveRecord::Base
   end
 
   def overlaps?
-    TableReservation.where("table_number = ?", self.table_number).
+    self.started_at.present? && self.ended_at.present? && TableReservation.where("table_number = ?", self.table_number).
                      where("(:started_at >= started_at AND :started_at < ended_at) OR
                             (:ended_at > started_at AND :ended_at < ended_at) OR
                             (:started_at <= started_at AND :ended_at >= ended_at)",
