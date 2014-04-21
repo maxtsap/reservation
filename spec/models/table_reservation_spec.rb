@@ -106,6 +106,10 @@ describe TableReservation do
     it "returns overlapped records" do
       expect(TableReservation.overlapped(table_reservation3).to_a).to be_eql [table_reservation1, table_reservation2]
     end
+
+    it "returns overlapped records without self" do
+      expect(TableReservation.overlapped(table_reservation1).to_a).to be_eql [table_reservation2]
+    end
   end
 
 end

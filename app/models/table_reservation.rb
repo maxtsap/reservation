@@ -9,7 +9,8 @@ class TableReservation < ActiveRecord::Base
   validate :reservation_overlapping
 
   scope :same_table, -> (table_reservation) { where("table_number = ?", table_reservation.table_number) }
-  scope :overlapped, -> (table_reservation) { where("(:started_at >= started_at AND :started_at < ended_at) OR
+  scope :overlapped, -> (table_reservation) { where.not(id: table_reservation.id).
+                                              where("(:started_at >= started_at AND :started_at < ended_at) OR
                                                      (:ended_at > started_at AND :ended_at < ended_at) OR
                                                      (:started_at <= started_at AND :ended_at >= ended_at)",
                                                      {ended_at: table_reservation.ended_at,
