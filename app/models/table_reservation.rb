@@ -19,13 +19,13 @@ class TableReservation < ActiveRecord::Base
   private
 
   def ended_at_greater_than_started_at
-    if self.started_at && (self.started_at > self.ended_at)
+    if dates_present? && (self.started_at > self.ended_at)
       self.errors.add(:started_at, "can't be greater than Ended at")
     end
   end
 
   def reservation_is_in_future
-    if self.started_at && (self.started_at < DateTime.current)
+    if dates_present? && (self.started_at < DateTime.current)
       self.errors.add(:started_at, "can't be in the past")
     end
   end
@@ -35,7 +35,11 @@ class TableReservation < ActiveRecord::Base
   end
 
   def overlaps?
-    self.started_at.present? && self.ended_at.present? && TableReservation.same_table(self).overlapped(self).any?
+    dates_present? && TableReservation.same_table(self).overlapped(self).any?
+  end
+
+  def dates_present?
+    self.started_at.present? && self.ended_at.present?
   end
 
 end
